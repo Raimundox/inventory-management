@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface Product {
+  dueDate: string;
+  imageProductUrl: string;
   productId: string;
   name: string;
   price: number;
-  rating?: number;
   stockQuantity: number;
 }
 
@@ -59,7 +60,7 @@ export interface User {
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
-  tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses"],
+  tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses", "Categories", "Brands"],
   endpoints: (build) => ({
     getDashboardMetrics: build.query<DashboardMetrics, void>({
       query: () => "/dashboard",
@@ -68,7 +69,7 @@ export const api = createApi({
     getProducts: build.query<Product[], string | void>({
       query: (search) => ({
         url: "/products",
-        params: search ? { search } : {},
+        params: search ? { search: search.toLowerCase() } : {},
       }),
       providesTags: ["Products"],
     }),
@@ -80,6 +81,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Products"],
     }),
+    editProduct: build.mutation<void, ProductFormData>({
+      query: (productData) => ({
+        url: "/products/edit", 
+        method: "PUT", 
+        body: productData, 
+      }),
+      invalidatesTags: ["Products"], 
+    }),
     getUsers: build.query<User[], void>({
       query: () => "/users",
       providesTags: ["Users"],
@@ -88,6 +97,14 @@ export const api = createApi({
       query: () => "/expenses",
       providesTags: ["Expenses"],
     }),
+    getCategories: build.query<string[], void>({
+      query: () => "/products/categories",  
+      providesTags: ["Categories"],
+    }),
+    getBrands: build.query<string[], void>({
+      query: () => "/products/brands",  
+      providesTags: ["Brands"],
+    }),
   }),
 });
 
@@ -95,6 +112,10 @@ export const {
   useGetDashboardMetricsQuery,
   useGetProductsQuery,
   useCreateProductMutation,
+  useEditProductMutation,
   useGetUsersQuery,
   useGetExpensesByCategoryQuery,
+  useGetCategoriesQuery, // Hook para buscar categorias
+  useGetBrandsQuery, // Hook para buscar marcas
 } = api;
+

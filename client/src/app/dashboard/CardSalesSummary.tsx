@@ -44,13 +44,13 @@ const CardSalesSummary = () => {
   return (
     <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl flex flex-col justify-between">
       {isLoading ? (
-        <div className="m-5">Loading...</div>
+        <div className="m-5">Carregando...</div>
       ) : (
         <>
           {/* HEADER */}
           <div>
             <h2 className="text-lg font-semibold mb-2 px-7 pt-5">
-              Sales Summary
+            Resumo de vendas
             </h2>
             <hr />
           </div>
@@ -60,7 +60,7 @@ const CardSalesSummary = () => {
             {/* BODY HEADER */}
             <div className="flex justify-between items-center mb-6 px-7 mt-5">
               <div className="text-lg font-medium">
-                <p className="text-xs text-gray-400">Value</p>
+                <p className="text-xs text-gray-400">Valor</p>
                 <span className="text-2xl font-extrabold">
                   $
                   {(totalValueSum / 1000000).toLocaleString("en", {
@@ -80,9 +80,9 @@ const CardSalesSummary = () => {
                   setTimeframe(e.target.value);
                 }}
               >
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
+                <option value="daily">Diário</option>
+                <option value="weekly">Semanalmente</option>
+                <option value="monthly">Mensal</option>
               </select>
             </div>
             {/* CHART */}
@@ -136,7 +136,7 @@ const CardSalesSummary = () => {
             <div className="flex justify-between items-center mt-6 text-sm px-7 mb-4">
               <p>{salesData.length || 0} days</p>
               <p className="text-sm">
-                Highest Sales Date:{" "}
+               Data de vendas mais alta:{" "}
                 <span className="font-bold">{highestValueDate}</span>
               </p>
             </div>

@@ -10,11 +10,11 @@ const CardPopularProducts = () => {
   return (
     <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-16">
       {isLoading ? (
-        <div className="m-5">Loading...</div>
+        <div className="m-5">Carregando...</div>
       ) : (
         <>
           <h3 className="text-lg font-semibold px-7 pt-5 pb-2">
-            Popular Products
+          Produtos populares
           </h3>
           <hr />
           <div className="overflow-auto h-full">
@@ -24,15 +24,7 @@ const CardPopularProducts = () => {
                 className="flex items-center justify-between gap-3 px-5 py-7 border-b"
               >
                 <div className="flex items-center gap-3">
-                  <Image
-                    src={`https://s3-inventorymanagement.s3.us-east-2.amazonaws.com/product${
-                      Math.floor(Math.random() * 3) + 1
-                    }.png`}
-                    alt={product.name}
-                    width={48}
-                    height={48}
-                    className="rounded-lg w-14 h-14"
-                  />
+                <h1>IMg</h1>
                   <div className="flex flex-col justify-between gap-1">
                     <div className="font-bold text-gray-700">
                       {product.name}

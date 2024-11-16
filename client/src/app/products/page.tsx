@@ -1,23 +1,16 @@
 "use client";
 
-import { useCreateProductMutation, useGetProductsQuery } from "@/state/api";
-import { PlusCircleIcon, SearchIcon } from "lucide-react";
-import { useState } from "react";
+import { useCreateProductMutation, useEditProductMutation, useGetProductsQuery } from "@/state/api";
+import { EditIcon, PlusCircleIcon, SearchIcon } from "lucide-react";
+import { useState, useEffect } from "react";
 import Header from "@/app/(components)/Header";
-import Rating from "@/app/(components)/Rating";
 import CreateProductModal from "./CreateProductModal";
 import Image from "next/image";
-
-type ProductFormData = {
-  name: string;
-  price: number;
-  stockQuantity: number;
-  rating: number;
-};
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductFormData | null>(null); // Para armazenar o produto sendo editado
 
   const {
     data: products,
@@ -25,19 +18,35 @@ const Products = () => {
     isError,
   } = useGetProductsQuery(searchTerm);
 
-  const [createProduct] = useCreateProductMutation();
+  const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
+  const [editProduct] = useEditProductMutation();
+
+  const openCreateModal = () => {
+    setSelectedProduct(null); // Garante que ao clicar em "Criar", não há um produto selecionado para edição
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (product: ProductFormData) => {
+    setSelectedProduct(product); // Define o produto selecionado para edição
+    setIsModalOpen(true);
+  };
+
   const handleCreateProduct = async (productData: ProductFormData) => {
     await createProduct(productData);
   };
 
+  const handleEditProduct = async (productData: ProductFormData) => {
+    await editProduct(productData);
+  };
+
   if (isLoading) {
-    return <div className="py-4">Loading...</div>;
+    return <div className="py-4">Carregando...</div>;
   }
 
   if (isError || !products) {
     return (
       <div className="text-center text-red-500 py-4">
-        Failed to fetch products
+        Falha ao buscar produtos
       </div>
     );
   }
@@ -50,7 +59,7 @@ const Products = () => {
           <SearchIcon className="w-5 h-5 text-gray-500 m-2" />
           <input
             className="w-full py-2 px-4 rounded bg-white"
-            placeholder="Search products..."
+            placeholder="Pesquisar produtos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -59,20 +68,19 @@ const Products = () => {
 
       {/* HEADER BAR */}
       <div className="flex justify-between items-center mb-6">
-        <Header name="Products" />
+        <Header name="Produtos" />
         <button
-          className="flex items-center bg-blue-500 hover:bg-blue-700 text-gray-200 font-bold py-2 px-4 rounded"
-          onClick={() => setIsModalOpen(true)}
+          onClick={openCreateModal}
+          className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          <PlusCircleIcon className="w-5 h-5 mr-2 !text-gray-200" /> Create
-          Product
+          <PlusCircleIcon className="w-5 h-5 mr-2 !text-gray-200" /> Criar Produto
         </button>
       </div>
 
       {/* BODY PRODUCTS LIST */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg-grid-cols-3 gap-10 justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-between">
         {isLoading ? (
-          <div>Loading...</div>
+          <div>Carregando...</div>
         ) : (
           products?.map((product) => (
             <div
@@ -81,9 +89,7 @@ const Products = () => {
             >
               <div className="flex flex-col items-center">
                 <Image
-                  src={`https://s3-inventorymanagement.s3.us-east-2.amazonaws.com/product${
-                    Math.floor(Math.random() * 3) + 1
-                  }.png`}
+                  src={product.imageProductUrl}
                   alt={product.name}
                   width={150}
                   height={150}
@@ -92,15 +98,19 @@ const Products = () => {
                 <h3 className="text-lg text-gray-900 font-semibold">
                   {product.name}
                 </h3>
-                <p className="text-gray-800">${product.price.toFixed(2)}</p>
+                <p className="text-gray-800">R${product.price.toFixed(2)}</p>
                 <div className="text-sm text-gray-600 mt-1">
-                  Stock: {product.stockQuantity}
+                  Estoque: {product.stockQuantity}
                 </div>
-                {product.rating && (
-                  <div className="flex items-center mt-2">
-                    <Rating rating={product.rating} />
-                  </div>
-                )}
+                <div className="text-sm text-gray-600 mt-1">
+                  Validade: {new Date(product.dueDate).toLocaleDateString("pt-BR")}
+                </div>
+                <button
+                  onClick={() => openEditModal(product)}
+                  className="mt-2 text-blue-500 hover:text-blue-700"
+                >
+                  <EditIcon className="w-5 h-5 inline-block mr-1" /> Editar
+                </button>
               </div>
             </div>
           ))
@@ -112,6 +122,8 @@ const Products = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onCreate={handleCreateProduct}
+        onEdit={handleEditProduct}
+        productToEdit={selectedProduct} // Passando o produto selecionado para o modal de edição
       />
     </div>
   );

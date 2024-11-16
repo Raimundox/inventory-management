@@ -14,29 +14,50 @@ datasource db {
 }
 
 model Users {
-  userId String @id
+  userId String  @id
   name   String
-  email  String
+  phone  String? // telefone opcional
+  Sales  Sales[] // vendas associadas ao usuário (cliente)
 }
 
 model Products {
-  productId     String      @id
-  name          String
-  price         Float
-  rating        Float?
-  stockQuantity Int
-  Sales         Sales[]
-  Purchases     Purchases[]
+  productId       String     @id
+  name            String
+  price           Float
+  stockQuantity   Int
+  imageProductUrl String?
+  dueDate         DateTime
+  categoryId      String
+  brandId         String
+  Sales           Sales[]    // vendas relacionadas ao produto
+  Purchases       Purchases[]// compras relacionadas ao produto
+  
+  category        Category   @relation(fields: [categoryId], references: [categoryId])
+  brand           Brand      @relation(fields: [brandId], references: [brandId])
+}
+
+model Category {
+  categoryId String   @id
+  name       String
+  Products   Products[] // Produtos que pertencem a esta categoria
+}
+
+model Brand {
+  brandId   String   @id
+  name      String
+  Products  Products[] // Produtos que pertencem a esta marca
 }
 
 model Sales {
   saleId      String   @id
   productId   String
+  userId      String
   timestamp   DateTime
   quantity    Int
   unitPrice   Float
   totalAmount Float
   product     Products @relation(fields: [productId], references: [productId])
+  user        Users    @relation(fields: [userId], references: [userId]) // Relacionamento com o usuário (cliente)
 }
 
 model Purchases {
