@@ -74,7 +74,7 @@ export const createProduct = async (
 
     res.status(201).json(product);
   } catch (error) {
-    console.error("Erro ao criar produto:", error);
+    console.error("Agora deu erro", error);
     res.status(500).json({ error: "Erro interno do servidor. Tente novamente mais tarde." });
   }
 };
