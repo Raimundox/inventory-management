@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Header from "@/app/(components)/Header";
 import CreateProductModal from "./CreateProductModal";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,11 +33,22 @@ const Products = () => {
   };
 
   const handleCreateProduct = async (productData: ProductFormData) => {
-    await createProduct(productData);
+    try {
+      await createProduct(productData);
+      toast.success("Produto criado com sucesso!");
+    } catch (error) {
+      toast.error("Falha ao criar produto.");
+    }
   };
 
   const handleEditProduct = async (productData: ProductFormData) => {
-    await editProduct(productData);
+    try {
+      await editProduct(productData);
+      toast.success("Produto atualizado com sucesso!");
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error("Falha ao atualizar produto.");
+    }
   };
 
   if (isLoading) {

@@ -60,7 +60,7 @@ export interface User {
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
-  tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses", "Categories", "Brands"],
+  tagTypes: ["DashboardMetrics", "Products", "Clients", "Expenses", "Categories", "Brands"],
   endpoints: (build) => ({
     getDashboardMetrics: build.query<DashboardMetrics, void>({
       query: () => "/dashboard",
@@ -89,9 +89,36 @@ export const api = createApi({
       }),
       invalidatesTags: ["Products"], 
     }),
-    getUsers: build.query<User[], void>({
-      query: () => "/users",
-      providesTags: ["Users"],
+    getClients: build.query<User[], string | void>({
+      query: (search) => ({
+        url: "/clients",
+        params: search ? { search: search.toLowerCase() } : {},
+      }),
+      providesTags: ["Clients"],
+    }),
+    createClient: build.mutation<void, CreateClientParams>({
+      query: (clientData) => ({
+        url: "/clients", 
+        method: "POST", 
+        body: clientData, 
+      }),
+      invalidatesTags: ["Clients"], 
+    }),
+    editClient: build.mutation<void, CreateClientParams>({
+      query: (productData) => ({
+        url: "/clients/edit", 
+        method: "PUT", 
+        body: productData, 
+      }),
+      invalidatesTags: ["Clients"], 
+    }),
+    deleteClient: build.mutation<void, CreateClientParams>({
+      query: (productData) => ({
+        url: "/clients/delete", 
+        method: "DELETE", 
+        body: productData, 
+      }),
+      invalidatesTags: ["Clients"], 
     }),
     getExpensesByCategory: build.query<ExpenseByCategorySummary[], void>({
       query: () => "/expenses",
@@ -113,7 +140,10 @@ export const {
   useGetProductsQuery,
   useCreateProductMutation,
   useEditProductMutation,
-  useGetUsersQuery,
+  useGetClientsQuery,
+  useCreateClientMutation,
+  useEditClientMutation,
+  useDeleteClientMutation,
   useGetExpensesByCategoryQuery,
   useGetCategoriesQuery, // Hook para buscar categorias
   useGetBrandsQuery, // Hook para buscar marcas

@@ -109,19 +109,19 @@ const Sidebar = () => {
         <SidebarLink
           href="/inventory"
           icon={Archive}
-          label="Inventory"
+          label="Estoque"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
           href="/products"
           icon={Clipboard}
-          label="Products"
+          label="Produtos"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
-          href="/users"
+          href="/clients"
           icon={User}
-          label="Users"
+          label="Clientes"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink

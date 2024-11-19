@@ -30,3 +30,11 @@ body,
     grid-template-rows: repeat(8, 7.5vh);
   }
 }
+
+.react-confirm-alert-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+.react-confirm-alert {
+  font-family: Arial, sans-serif;
+  border-radius: 8px;
+}

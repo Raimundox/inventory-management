@@ -1,10 +1,16 @@
 type ProductFormData = {
-    name: string;
-    price: number;
-    stockQuantity: number;
-    imageProductUrl: string;
-    dueDate: string; // Esta é a data em formato ISO
-    productId: string;
-    category: string; // Categoria selecionada
-    brand: string; // Marca selecionada
-  };
+  name: string;
+  price: number;
+  stockQuantity: number;
+  imageProductUrl: string;
+  dueDate: string; 
+  productId: string;
+  category: string; 
+  brand: string; 
+};
+
+type CreateClientParams = {
+  userId: String;
+  name: String;
+  phone: String;
+};
